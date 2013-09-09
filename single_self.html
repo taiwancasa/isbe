@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="法式喜餅,中式喜餅,日式喜餅,喜餅,囍餅,喜餅折扣,奧捷十日蜜月旅行,百萬嫁禮幸福送,解除單身魔咒" />
+    <meta name="description" content="法式喜餅，中式喜餅，日式喜餅，喜餅，囍餅，喜餅折扣，奧捷十日蜜月旅行，百萬嫁禮幸福送，經濟部認證優良品牌，時尚糕餅代表，擁有她就擁有幸福！" />
+    <meta name="copyright" content="© 2013 Copyright Isabelle" />
+    <title>伊莎貝爾、皇樓、御倉屋三品牌喜餅聯合行銷活動 - 百萬嫁禮幸福送，奧捷蜜月旅行月月抽</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <meta property="og:image" content="http://www.isabellecorp.com.tw/2013million/images/Push_200x200.jpg"/>
+    
+		<script src="scripts/jmobile.js"></script>
+		<script type="text/javascript" src="swfobject.js"></script>
+        <script type="text/javascript" src="javascript/jquery-1.7.2.min.js"></script>
+        <script src="https://connect.facebook.net/zh_TW/all.js" type="text/javascript"></script>
+        <script type="text/javascript">
+		var fbAppId = '240237482791186';
+        var nowUri = location.href;
+        var fbLoginUri = "https://graph.facebook.com/oauth/authorize?client_id=" + fbAppId + "&scope=user_about_me,user_likes,email,read_stream,publish_stream,offline_access&redirect_uri=" + escape(nowUri);
+
+        $(function () {
+            FB.init({
+                appId: fbAppId, // App ID
+                channelUrl: 'http://www.isabellecorp.com.tw/2013million/channel.html',
+                status: true, // check login status
+                cookie: true, // enable cookies to allow the server to access the session
+                oauth: true, // enable OAuth 2.0
+                xfbml: true  // parse XFBML
+            });
+
+            FB.getLoginStatus(function (response) {
+                if (response.authResponse) {
+					//thisMovie("test").jsInit();		
+                    FB.api(
+                    {
+                        method: 'fql.query',
+                        query: 'SELECT uid, name, friend_count FROM user WHERE uid = me()'
+                    },
+                    function (response) {
+                        var jsonString = JSON.stringify(response);
+                        $("#fbdata").val(jsonString.replace('[', '').replace(']', ''));
+                    })
+				 }
+                else { window.location.href = fbLoginUri; }
+            });
+        });
+		//---------------------------------------------------------------
+        function GetFriendList(StartNum, TotalNum) {
+            FB.api(
+            {
+                method: 'fql.query',
+                query: 'SELECT uid, name, pic_big FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) limit ' + StartNum.toString() + ',' + TotalNum.toString()
+            },
+            function (response) {
+                 var jsonString = JSON.stringify(response);
+                $("#_friend").text(jsonString.replace('[', '').replace(']',''));
+                var ss = jsonString.replace('[', '').replace(']', '');
+				var ok = '{\"friend\":' + jsonString + '}'
+				thisMovie("test").resultFriendData(ok);
+            })
+        }
+		
+		
+		
+		
+		function GetFriendBigPicLink(fb_id) {
+            FB.api(
+            {
+				
+                method: 'fql.query',
+                //query: 'SELECT src_big FROM photo WHERE pid IN (SELECT cover_pid FROM album WHERE owner =' + fb_id + ' AND type = "profile")'		
+				query:'SELECT uid, pic_big FROM user WHERE uid ='+fb_id	
+            },
+            function (response) {
+                 var jsonString = JSON.stringify(response);
+				 //alert(jsonString)
+				 //[{"pic_square":"https://xxxxxx.jpg"}
+                
+                var ss = jsonString.replace('[', '').replace(']', '');
+				thisMovie("test").resultTwoFriendPic(ss);
+				
+            })
+        }
+		
+		//GetFriendBigPicLink(608896357);
+		
+		
+		//---------------------------------------------------------------
+        function GetTotalFriendNum() {
+            FB.init({
+                appId: fbAppId, // App ID
+                channelUrl: 'http://www.isabellecorp.com.tw/2013million/channel.html',
+                status: true, // check login status
+                cookie: true, // enable cookies to allow the server to access the session
+                oauth: true, // enable OAuth 2.0
+                xfbml: true  // parse XFBML
+            });
+
+            FB.getLoginStatus(function (response) {
+                if (response.authResponse) {
+
+                    FB.api(
+                    {
+                        method: 'fql.query',
+                        query: 'SELECT uid, name, friend_count FROM user WHERE uid = me()'
+                    },
+                    function (response) {
+                        var jsonString = JSON.stringify(response);
+                        //                $("#_friendcount").text(jsonString.replace('[', '').replace(']', ''));
+                        var ss = jsonString.replace('[', '').replace(']', '');
+                        //console.info("response:" + response);
+                        //console.info("ss:" + ss);
+                        thisMovie("test").selfData(ss);
+                        //thisMovie("test").setFBData(ss);
+                    })
+
+
+                }
+                else { window.location.href = fbLoginUri; }
+            });
+        }
+		//---------------------------------------------------------------
+        function PostPicToFBAndTagsFriends(postID, postName, friendID1, friendName1, friendID2, friendName2) {            
+            var guid = new Date().getTime().toString() + Math.floor((Math.random() * 1000) + 1).toString();
+
+            var fbmsg = '';
+            fbmsg += '推薦' + friendName1 + '和' + friendName2 + '變成好友';
+            fbmsg += '\r\n\r\nwww.isabellecorp.com.tw/2013million/startCookie.aspx?s=' + guid;
+            fbmsg += '\r\n\r\n伊莎貝爾、皇樓、御倉屋 三大囍餅品牌邀妳解除單身魔咒！推薦好友，分享到FB還可以月月抽黃金喔~';
+            
+            var fburl = 'http://www.isabellecorp.com.tw/2013million/images/fb_tag_image.jpg';
+            var PostResult = true;           
+
+            FB.api('/me/photos', 'post', {
+                message: fbmsg,
+                url: fburl
+            }, function (response) {
+                if (!response || response.error) {
+                    //alert('發佈失敗!');
+                    PostResult = false
+                } else {
+                    //alert('發佈成功!');
+					thisMovie("test").resultTagFriendData("ok");
+                    //tags friend     
+                    var postId = response.id;
+                    FB.api(postId + '/tags?to=' + friendID1, 'post', function (response) {
+                        if (!response || response.error) {
+                            //alert('Tag 失敗!');
+                            PostResult = false
+                        }
+                        else {
+                            //alert('Tag 成功!');
+                        }
+                    });
+
+                    FB.api(postId + '/tags?to=' + friendID2, 'post', function (response) {
+                        if (!response || response.error) {
+                            //alert('Tag 失敗!');
+                            PostResult = false
+                        }
+                        else {
+                            //alert('Tag 成功!');
+                        }
+                    });
+                }
+            });
+
+            if (PostResult) {
+                //記錄資料至DB
+                WritePushLog(guid, postID, postName, friendID1, friendName1, friendID2, friendName2);
+            }
+        }
+
+        function WritePushLog(guid, postID, postName, friendID1, friendName1, friendID2, friendName2) {
+            var version = $.browser.version;
+            var retval = "";
+            var Sys = {};
+            var ua = navigator.userAgent.toLowerCase();
+            var s;
+
+            (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] :
+                    (s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
+                    (s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
+                    (s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
+                    (s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
+
+            if (Sys.ie) retval = "ie";
+            if (Sys.firefox) retval = "firefox";
+            if (Sys.chrome) retval = "Chrome";
+            if (Sys.opera) retval = "opera";
+            if (Sys.safari) retval = "safari";
+            var browser = retval + ' ' + version;
+            $.ajax(
+            {
+                url: 'WritePushLog.aspx',
+                dataType: 'json',
+                data: "guid=" + guid + "&postID=" + postID + "&postName=" + postName + "&friendID1=" + friendID1 + "&friendName1=" + friendName1 + "&friendID2=" + friendID2 + "&friendName2=" + friendName2 + "&browser=" + browser,
+                type: 'POST',
+                timeout: 5000,
+                success: ResponseProcess, //post-submit callback
+                error: ShowError
+            })
+
+            function ShowError(data) {
+                //alert(data.responseText);
+            }
+
+            function ResponseProcess(data) {
+                //alert(data.PostedData);
+            }
+        }
+		//---------------------------------------------------------------
+        function ReplyToFBAndTagsFriends(friendID, friendName) {
+            var fbmsg = '';
+            fbmsg += '我願意和' + friendName + '變成好友';
+            fbmsg += '\r\n\r\nwww.isabellecorp.com.tw/2013million/startCookie.aspx?s=';
+            fbmsg += '\r\n\r\n伊莎貝爾、皇樓、御倉屋三大囍餅品牌讓我和' + friendName + '變成好朋友，快來認識更多人，還有機會得到黃金商品唷！';
+
+            var minNum = 1;
+            var maxNum = 6;              
+            var rndNum = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+            var fburl = 'http://www.isabellecorp.com.tw/2013million/images/fbicon/' + rndNum + '.jpg';
+
+            FB.api('/me/photos', 'post', {
+                message: fbmsg,
+                url: fburl
+            }, function (response) {
+                if (!response || response.error) {
+                  //  alert('發佈失敗!');
+                } else {
+                    //alert('發佈成功!');
+
+                    //tags friend     
+                    var postId = response.id;
+                    FB.api(postId + '/tags?to=' + friendID, 'post', function (response) {
+                        if (!response || response.error) {
+                      //      alert('Tag 失敗!');
+                        }
+                        else {
+                        //    alert('Tag 成功!');
+                        }
+                    });
+                }
+            });
+        }
+		
+		function alertStr(str)
+		{
+			alert(str);
+		}
+		
+		
+		
+		//---------------------------------------------------------------
+		
+	/*	
+	$(window).load = function() 
+  	{ 
+		//console.info("window loaded")
+  		thisMovie("test").jsInit();
+  	}
+	*/
+	
+	
+	function fptClick(flag, url, title) {            
+            var wname = "";
+			////console.info("click" + flag +","+url +"," + title )
+            title = ReplaceAll(title, "　", " ");
+            if (flag == "fClick") {
+                url = "http://www.facebook.com/sharer.php?u=" + encodeURIComponent(url) + "&t=" + encodeURIComponent(title);
+                wname = "sharer";
+            } else if (flag == "pClick") {
+                url = "http://www.plurk.com/?qualifier=shares&status=" + encodeURIComponent(url) + " (" + encodeURIComponent(title) + ")";
+                wname = "plurk";
+            } else if (flag == "tClick") {
+                url = "http://twitter.com/?qualifier=shares&status=(" + encodeURIComponent(title) + ") " + encodeURIComponent(url);
+                wname = "twitter";
+            }
+            window.open(url, wname);
+        }
+		
+	function fbPublish()
+	{
+		var wname = "fb";
+		url = "http://www.facebook.com/sharer.php?u=" + encodeURIComponent("http://www.isabellecorp.com.tw/2013million/") + "&t=" + encodeURIComponent("買喜餅抽百萬嫁妝");
+		window.open(url, wname);	
+	}
+	
+	
+	function getNowLocation(){
+		return window.location.href;	
+	}
+	
+	function getUserBrowser()
+	{
+		return navigator.userAgent;	
+	}
+	
+	
+    </script>
+    	
+        
+        
+		<script type="text/javascript">
+		
+			function thisMovie(movieName) 
+			{
+				if (navigator.appName.indexOf("Microsoft") != -1) 
+				{
+					return window[movieName];
+				} 
+				else 
+				{
+					return document[movieName];
+				}
+				alert("thisMovie");
+			}
+		
+			<!-- Adobe recommends that developers use SWFObject2 for Flash Player detection. -->
+			<!-- For more information see the SWFObject page at Google code (http://code.google.com/p/swfobject/). -->
+			<!-- Information is also available on the Adobe Developer Connection Under "Detecting Flash Player versions and embedding SWF files with SWFObject 2" -->
+			<!-- Set to minimum required Flash Player version or 0 for no version detection -->
+			var swfVersionStr = "11.2.0";
+			<!-- xiSwfUrlStr can be used to define an express installer SWF. -->
+			var xiSwfUrlStr = "";
+			var flashvars = {
+					//fbdata:"123"
+				};
+			var params = {};
+			params.quality = "high";
+			params.bgcolor = "#ffffff";
+			params.play = "true";
+			params.loop = "true";
+			params.wmode = "window";
+			params.scale = "noscale";
+			params.menu = "false";
+			params.devicefont = "false";
+			params.salign = "";
+			params.allowfullscreen = "true";
+			//params.allowscriptaccess = "sameDomain";
+			params.allowscriptaccess = "always";
+           // params.fbdata = "123" + $("#fbdata").val();
+			var attributes = {};
+			attributes.id = "test";
+			attributes.name = "test";
+			attributes.align = "middle";
+			swfobject.createCSS("html", "height:100%; background-color: #ffffff;");
+			swfobject.createCSS("body", "margin:0; padding:0; overflow:hidden; height:100%;");
+			swfobject.embedSWF(
+				"test.swf?v=20130903", "flashContent",
+				"100%", "100%",
+				swfVersionStr, xiSwfUrlStr,
+				flashvars, params, attributes);
+		</script>
+        <style>
+        	
+			html {
+			height:100%;
+			overflow:hidden;
+			}
+			body {
+			margin:0px;
+			padding:0px;
+			background-color:#FFFFFF;
+			height:100%;
+			text-align:center;
+			}
+			#flashContent {
+			width:100%;
+			height:100%;
+			position:absolute;
+			outline:none;
+			}
+			
+			
+        </style>
+	</head>
+	<body>
+		<!-- SWFObject's dynamic embed method replaces this alternative HTML content for Flash content when enough JavaScript and Flash plug-in support is available. -->
+		<div id="flashContent">
+			<a href="http://www.adobe.com/go/getflash">
+				<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+			</a>
+			<p>This page requires Flash Player version 11.2.0 or higher.</p>
+		</div>
+        <input id="fbdata" type="hidden" />
+        <div id="fb-root"></div>
+	</body>
+</html>

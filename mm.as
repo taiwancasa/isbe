@@ -1,0 +1,1 @@
+﻿package  {		import flash.display.MovieClip;	import flash.events.Event;			public class mm extends MovieClip {						public function mm() {						this.addEventListener(Event.ADDED_TO_STAGE,aaa);					}						public function aaa(e:Event)		{			trace("aaaaa")			this.removeEventListener(Event.ADDED_TO_STAGE,aaa);		}	}	}

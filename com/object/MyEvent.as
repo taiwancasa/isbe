@@ -1,0 +1,1 @@
+﻿package com.object{   	import flash.events.Event;   	public class MyEvent extends Event{   		private var _object:Object;   		public function MyEvent(type:String,object:Object):void{   			super(type);   			_object=object;   		}   		public function get param():Object {   			return _object;   		}   	}   }  

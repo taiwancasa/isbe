@@ -1,0 +1,7 @@
+﻿package com.data {		import com.data.FBData;	import flash.external.ExternalInterface;	import flash.events.EventDispatcher;	import flash.events.Event;	//	public class FBFriend extends EventDispatcher {						private static var _startNum:Number = new Number(1);		private static var _range:Number = new Number(100);		private static var _obj:Object = new Object();		private static var _jsonStr:String = new String();		//		private var fd:FBData = new FBData();				public function FBFriend() {			//_obj.aaaa = "54";		}				public function get obj():Object		{			return _obj;		}		public function get jsonStr():String		{			return _jsonStr;		}		public function get startNum():Number		{			return _startNum;		}				public function get range():Number		{			return _range;		}		
+		
+		public function set range(num:Number):void
+		{
+			 _range = num;
+		}
+				public function addRange():void		{			_startNum += _range;		}				public function getFriendData()		{			ExternalInterface.call("GetFriendList",_startNum,_range);			ExternalInterface.addCallback("resultFriendData",resultFriendData);		}				private function resultFriendData(json)		{			var _obj = JSON.parse(json);			_jsonStr = String(json);			trace("data:"+ _jsonStr);			//trace("----------------------")			trace("uid:" + _obj.friend[0].uid)			this.dispatchEvent(new Event("OnCompleteLoadInitFF",true));		}			}	}
