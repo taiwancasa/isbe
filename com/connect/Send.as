@@ -48,7 +48,7 @@
 			var str2 = str.replace('cookies','\"cookies\"').split( '\"[' ).join( '[' ).split( ']\"' ).join( ']' );
 			trace("  " + str2);
 			this.setAllCookieJson(str2);
-			this.dispatchEvent(new Event("GotAllFriendEvent",true));
+			this.dispatchEvent(new Event("GotAllCookieEvent",true));
 		}
 		
 		
